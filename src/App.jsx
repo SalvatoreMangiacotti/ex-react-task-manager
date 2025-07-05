@@ -1,12 +1,13 @@
 // Hooks
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GlobalProvider } from './context/GlobalContext';
-import DefaultLayout from './layouts/DefaultLayout';
 
 // Componenti
 import TaskList from './pages/TaskList';
 import AddTask from './pages/AddTask';
+import DefaultLayout from './layouts/DefaultLayout';
 
+// CSS
 import './App.css';
 
 function App() {

@@ -1,18 +1,15 @@
 // Hooks
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 
 // Contesto globale
 const GlobalContext = createContext();
 
-
+// API (.env)
 const apiUrl = import.meta.env.VITE_API_URL;
-
-export const useGlobalContext = () => useContext(GlobalContext);
-
 
 export const GlobalProvider = ({ children }) => {
 
-    const [tasks, setTasks] = useState()
+    const [tasks, setTasks] = useState([])
 
     useEffect(() => {
         fetch(`${apiUrl}/tasks`)
@@ -25,9 +22,11 @@ export const GlobalProvider = ({ children }) => {
     }, []);
 
     return (
-        <GlobalContext.Provider value={{ tasks }}>
+        <GlobalContext.Provider value={{ tasks, setTasks }}>
             {children}
         </GlobalContext.Provider>
     );
 
 }
+
+export default GlobalContext;
