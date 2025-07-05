@@ -6,6 +6,7 @@ import GlobalContext from "../context/GlobalContext";
 import TaskRow from "../components/TaskRow";
 
 function TaskList() {
+
     const { tasks } = useContext(GlobalContext);
 
     return (
