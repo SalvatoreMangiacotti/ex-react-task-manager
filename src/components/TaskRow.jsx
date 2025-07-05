@@ -3,8 +3,6 @@ import React from "react";
 
 function TaskRow({ task }) {
 
-    console.log(`Rendering TaskRow: ${task.id}`);
-
     const checkStatus = (status) => {
         return status === "To do" ? "red" : status === "Doing" ? "yellow" : status === "Done" ? "green" : "";
     }
