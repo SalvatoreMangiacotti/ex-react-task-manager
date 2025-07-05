@@ -1,5 +1,6 @@
 // Hooks
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { GlobalProvider } from './context/GlobalContext';
 import DefaultLayout from './layouts/DefaultLayout';
 
 // Componenti
@@ -10,14 +11,16 @@ import './App.css';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route path="/tasklist" element={<TaskList />} />
-          <Route path="/addtask" element={<AddTask />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <GlobalProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<DefaultLayout />}>
+            <Route path="/tasklist" element={<TaskList />} />
+            <Route path="/addtask" element={<AddTask />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </GlobalProvider >
   );
 }
 
