@@ -1,3 +1,7 @@
+span {
+    display: block;
+}
+
 .red {
     background-color: #e9152d;
 }

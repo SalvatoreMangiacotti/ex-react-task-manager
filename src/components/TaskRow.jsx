@@ -1,5 +1,6 @@
 // Hooks
 import React from "react";
+import { Link } from "react-router-dom";
 
 function TaskRow({ task }) {
 
@@ -9,7 +10,7 @@ function TaskRow({ task }) {
 
     return (
         <tr>
-            <th>{task.title}</th>
+            <th><Link to={`/task/${task.id}`}>{task.title}</Link></th>
 
             <th className={checkStatus(task.status)}>
                 {task.status}
