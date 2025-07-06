@@ -81,9 +81,40 @@ function useTasks() {
     }
 
 
-    const updateTask = () => {
-        // logica
-    }
+    const updateTask = async (updatedTask) => {
+        try {
+            const requestConfig = {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedTask)
+            };
+
+            // Chiamata API PUT per aggiornare la task
+            const response = await fetch(`${apiUrl}/tasks/${updatedTask.id}`, requestConfig);
+
+            const data = await response.json();
+
+            // In caso di errore
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+
+            // Aggiorna lo stato locale sostituendo la task aggiornata
+            setTasks(prevTasks =>
+                prevTasks.map(task => task.id === data.task.id ? data.task : task)
+            );
+
+            // In caso di successo
+            console.log("Task aggiornata con successo:", data.task);
+
+        } catch (error) {
+            // Messaggio di errore
+            console.error("Errore nell'aggiornamento della task:", error.message);
+            alert(`Errore: ${error.message}`);
+        }
+    };
 
     return { tasks, addTask, removeTask, updateTask };
 
