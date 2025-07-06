@@ -21,6 +21,7 @@ function useTasks() {
 
     const addTask = async (newTask) => {
         try {
+
             const requestConfig = {
                 method: "POST",
                 headers: {
@@ -34,9 +35,9 @@ function useTasks() {
 
             const data = await response.json();
 
-            // In caso di errore errore
+            // In caso di errore
             if (!data.success) {
-                console.error("Errore:", data.message);
+                throw new Error(data.message);
             }
 
             // Aggiorna lo stato locale con la nuova task + le precedenti
@@ -48,13 +49,37 @@ function useTasks() {
         } catch (error) {
             // Messaggio di errore
             console.error("Errore nell'aggiunta della task:", error.message);
+            alert(`Errore: ${error.message}`);
         }
     };
 
 
-    const removeTask = () => {
-        // logica
+    const removeTask = async (taskId) => {
+        try {
+
+            const requestConfig = {
+                method: "DELETE"
+            }
+
+            const response = await fetch(`${apiUrl}/tasks/${taskId}`, requestConfig);
+
+            const data = await response.json();
+
+            // In caso di errore
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+
+            // In caso di successo la task viene rimossa
+            setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+
+        } catch (error) {
+            // Messaggio di errore
+            console.error("Errore nell'eliminazione della task:", error.message);
+            alert(`Errore: ${error.message}`);
+        }
     }
+
 
     const updateTask = () => {
         // logica
