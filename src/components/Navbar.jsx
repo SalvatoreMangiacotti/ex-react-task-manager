@@ -5,7 +5,7 @@ function Navbar() {
     return (
         <header>
             <nav className="navbar">
-                <NavLink to="/tasklist">Task List</NavLink>
+                <NavLink to="/">Task List</NavLink>
                 <NavLink to="/addtask">Add Task</NavLink>
             </nav>
         </header>
