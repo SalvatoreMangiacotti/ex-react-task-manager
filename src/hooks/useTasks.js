@@ -33,18 +33,18 @@ function useTasks() {
             // Chiamata API con la struttura definita in "requestConfig"
             const response = await fetch(`${apiUrl}/tasks`, requestConfig);
 
-            const data = await response.json();
+            const { success, message, task } = await response.json();
 
             // In caso di errore
-            if (!data.success) {
-                throw new Error(data.message);
+            if (!success) {
+                throw new Error(message);
             }
 
             // Aggiorna lo stato locale con la nuova task + le precedenti
-            setTasks(prev => [...prev, data.task]);
+            setTasks(prev => [...prev, task]);
 
             // In caso di successo
-            console.log("Task creata con successo:", data.task);
+            console.log("Task creata con successo:", task);
 
         } catch (error) {
             // Messaggio di errore
