@@ -1,66 +1,114 @@
-// Hooks
-import { useContext, useState, useMemo } from "react";
-
-// Componenti
+import { useContext, useState, useMemo, useCallback } from "react";
 import GlobalContext from "../context/GlobalContext";
 import TaskRow from "../components/TaskRow";
 
+
 function TaskList() {
 
+    // Lista dei task dal contesto globale
     const { tasks } = useContext(GlobalContext);
 
-    // State per l'ordinamento delle task
+    // Stati per ordinamento campo e direzione (1 crescente, -1 decrescente)
     const [sortBy, setSortBy] = useState("createdAt");
-    const [sortOrder, setSortOrder] = useState(1); // (1 per crescente, -1 per decrescente).
+    const [sortOrder, setSortOrder] = useState(1);
+
+    // Stato controllato per input ricerca (aggiornamento immediato)
+    const [searchInput, setSearchInput] = useState("");
+
+    // Stato per query di ricerca "debounced", aggiornato con ritardo per ottimizzazione
+    const [searchQuery, setSearchQuery] = useState("");
 
 
-    // Cambia ordinamento
+
+    // Funzione debounce per ritardare l'aggiornamento della query di ricerca
+    const debounce = useCallback((callback, delay) => {
+        let timer;
+        return (value) => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                callback(value);
+            }, delay);
+        };
+    }, []);
+
+    // Aggiorna searchQuery con 300ms di ritardo
+    const debouncedSetSearchQuery = useCallback(
+        debounce((value) => {
+            setSearchQuery(value);
+        }, 300),
+        [debounce]
+    );
+
+
+
+    // Aggiorna lo stato degli input e chiama il debounce per la query
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchInput(value);
+        debouncedSetSearchQuery(value);
+    };
+
+
+
+    // Cambia campo o inverte direzione
     const handleSort = (field) => {
         if (sortBy === field) {
-            // Se clicchi lo stesso campo, inverte la direzione
-            setSortOrder(prev => prev * -1);
+            setSortOrder((prev) => prev * -1);
         } else {
             setSortBy(field);
             setSortOrder(1);
         }
     };
 
-    // sortBy e sortOrder
+
+
+    // Memo per filtrare e ordinare i task in base a searchQuery, sortBy, sortOrder
     const sortedTasks = useMemo(() => {
-        // Ordine predefinito
+
+        // Ordine default
         const statusOrder = ["To do", "Doing", "Done"];
 
-        // Ritorna una nuova lista ordinata
-        return [...tasks].sort((a, b) => {
-            // sortBy estrae i valori da confrontare in base al campo selezionato
+        // Filtra case insensitive sulla query di ricerca debounced
+        const filtered = tasks.filter((task) =>
+            task.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        // Ordina la lista filtrata in base al campo e all’ordine selezionato
+        return [...filtered].sort((a, b) => {
             let valueA = a[sortBy];
             let valueB = b[sortBy];
 
-            // Se si ordina per "status" gli indici vengono convertiti
             if (sortBy === "status") {
                 valueA = statusOrder.indexOf(valueA);
                 valueB = statusOrder.indexOf(valueB);
             }
 
-            // Se si ordina per "createdAt" le date vengono convertite in timeStamp
             if (sortBy === "createdAt") {
                 valueA = new Date(valueA).getTime();
                 valueB = new Date(valueB).getTime();
             }
 
-            // Ordinamento per ordine alfabetico
             if (typeof valueA === "string") {
                 return valueA.localeCompare(valueB) * sortOrder;
             }
 
-            // Per numeri o date, ordine crescente o decrescente
             return (valueA - valueB) * sortOrder;
         });
-    }, [tasks, sortBy, sortOrder]); // Ricalcola solo se cambiano tasks o ordinamento
+    }, [tasks, sortBy, sortOrder, searchQuery]);
 
     return (
         <>
             <h2>Lista Tasks</h2>
+
+            {/* Input di ricerca controllato con debounce per filtrare i task */}
+            <input
+                type="text"
+                placeholder="Cerca per titolo..."
+                value={searchInput}
+                onChange={handleSearchChange}
+                style={{ marginBottom: "1rem", padding: "0.5rem", width: "100%" }}
+            />
+
             <table>
                 <thead>
                     <tr>
@@ -69,10 +117,11 @@ function TaskList() {
                         <th onClick={() => handleSort("createdAt")}>Data di creazione</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    {sortedTasks.map(task =>
+                    {sortedTasks.map((task) => (
                         <TaskRow key={task.id} task={task} />
-                    )}
+                    ))}
                 </tbody>
             </table>
         </>
