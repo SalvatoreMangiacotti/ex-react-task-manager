@@ -1,6 +1,11 @@
-import { useState, useRef } from "react";
+// Hooks
+import { useState, useRef, useContext } from "react";
+import GlobalContext from "../context/GlobalContext";
 
 function AddTask() {
+
+    // Custom hook
+    const { addTask } = useContext(GlobalContext);
 
     // Input controllato per il titolo
     const [title, setTitle] = useState("");
@@ -15,7 +20,7 @@ function AddTask() {
     // Simboli vietati
     const symbols = "!@#$%^&*()-_=+[]{}|;:'\\\",.<>?/`~";
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
 
         e.preventDefault();
 
@@ -42,7 +47,23 @@ function AddTask() {
         };
 
         console.log("Nuovo task:", newTask);
-    };
+
+        try {
+
+            await addTask(newTask);
+
+            alert("Task creata con successo!");
+
+            // Reset del form
+            setTitle("");
+            descriptionRef.current.value = "";
+            statusRef.current.value = "To do";
+
+        } catch (error) {
+            alert(`Errore nell'aggiunta della task: ${error}`);
+        }
+    }
+
 
     return (
         <>
