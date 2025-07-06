@@ -6,15 +6,15 @@ span {
 
 /* Stato delle task */
 
-.red {
+td.todo {
     background-color: #e9152d;
 }
 
-.yellow {
+td.doing {
     background-color: #ffd600;
 }
 
-.green {
+td.done {
     background-color: #008932;
 }
 

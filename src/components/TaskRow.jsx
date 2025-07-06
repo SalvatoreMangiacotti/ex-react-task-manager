@@ -4,17 +4,15 @@ import { Link } from "react-router-dom";
 
 function TaskRow({ task }) {
 
-    const checkStatus = (status) => {
-        return status === "To do" ? "red" : status === "Doing" ? "yellow" : status === "Done" ? "green" : "";
-    }
+    const statusClassName = task.status.replace(" ", "").toLowerCase();
 
     return (
         <tr>
-            <th><Link to={`/task/${task.id}`}>{task.title}</Link></th>
+            <td><Link to={`/task/${task.id}`}>{task.title}</Link></td>
 
-            <th className={checkStatus(task.status)}>
+            <td className={statusClassName}>
                 {task.status}
-            </th>
+            </td>
 
             <td>{new Date(task.createdAt).toLocaleDateString()}</td>
         </tr>
