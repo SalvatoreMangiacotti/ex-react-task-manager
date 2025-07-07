@@ -1,5 +1,5 @@
 // Hooks
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 // Componenti
 import Modal from './Modal'
@@ -7,55 +7,49 @@ import Modal from './Modal'
 
 function EditTaskModal({ show, onClose, task, onSave }) {
 
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const formRef = useRef(null);
+    const [editedTask, setEditedTask] = useState(task);
+    const editFormRef = useRef()
 
 
-    useEffect(() => {
-        if (task) {
-            setTitle(task.title || '');
-            setDescription(task.description || '');
-        }
-    }, [task]);
+    const changeEditedTask = (key, event) => {
+        setEditedTask(prev => ({ ...prev, [key]: event.target.value }))
+    }
+
+    const { title, description, status } = editedTask;
+
 
     // handleConfirm attiva il submit del form
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave({
-            ...task,
-            title,
-            description,
-        });
-        onClose();
-    };
-
-    // Il form esegue handleSubmit che salva e chiude la modale
-    const handleConfirm = () => {
-        if (formRef.current) {
-            formRef.current.requestSubmit();
-        }
+        onSave(editedTask);
     };
 
 
     const content = (
-        <form ref={formRef} onSubmit={handleSubmit}>
-            <div>
-                <label>Titolo</label><br />
-                <input
-                    type="text"
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    required
-                />
-            </div>
-            <div>
-                <label>Descrizione</label><br />
-                <textarea
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
-                />
-            </div>
+        <form ref={editFormRef} onSubmit={handleSubmit}>
+            <label>Nome task:</label>
+            <input
+                type="text"
+                value={title}
+                onChange={event => changeEditedTask('title', event)}
+                required
+            />
+
+            <label>Descrizione:</label>
+            <textarea
+                value={description}
+                onChange={event => changeEditedTask('description', event)}
+            />
+
+            <label>Stato:</label>
+            <select
+                value={status}
+                onChange={event => changeEditedTask('status', event)}
+            >
+                <option value="To do">To do</option>
+                <option value="Doing">Doing</option>
+                <option value="Done">Done</option>
+            </select>
         </form>
     );
 
@@ -66,7 +60,7 @@ function EditTaskModal({ show, onClose, task, onSave }) {
             content={content}
             show={show}
             onClose={onClose}
-            onConfirm={handleConfirm}
+            onConfirm={() => editFormRef.current.requestSubmit()}
             confirmText="Salva"
         />
     );

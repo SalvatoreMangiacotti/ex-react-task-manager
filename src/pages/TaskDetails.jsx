@@ -21,16 +21,16 @@ function TaskDetails() {
     // Trova l'id della task
     const task = tasks.find(task => task.id.toString() === id);
 
+    // Stato conferma eliminazione
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    // stato modifica task
+    const [showEditModal, setShowEditModal] = useState(false);
+
+
     // Se la task non viene trovata
     if (!task) {
         return <h2>Task non trovata!</h2>
     }
-
-
-    // Stato conferma eliminazione
-    const [showModal, setShowModal] = useState(false);
-    // stato modifica task
-    const [showEditModal, setShowEditModal] = useState(false);
 
 
     // Funzione per eliminare la task
@@ -50,7 +50,7 @@ function TaskDetails() {
         try {
             await updateTask(updatedTask);
             alert("Task modificata con successo");
-            setShowEditModal(false);
+            setShowEditModal(false)
         } catch (error) {
             alert(`Errore: ${error.message}`);
         }
@@ -65,17 +65,17 @@ function TaskDetails() {
             <span>Data di creazione: {new Date(task.createdAt).toLocaleDateString()}</span><br />
 
             {/* Bottone per aprire la modale elimina task */}
-            <button onClick={() => setShowModal(true)}>Elimina la task</button>
+            <button onClick={() => setShowDeleteModal(true)}>Elimina la task</button>
             {/* Bottone per aprire la modale modifica */}
             <button onClick={() => setShowEditModal(true)}>Modifica Task</button>
 
 
             {/* Modale di conferma eliminazione */}
             <Modal
-                show={showModal}
+                show={showDeleteModal}
                 title="Conferma Eliminazione"
                 content={`Sei sicuro di voler eliminare la task "${task.title}"?`}
-                onClose={() => setShowModal(false)}
+                onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleDelete}
                 confirmText="Elimina"
             />
