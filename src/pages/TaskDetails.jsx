@@ -9,6 +9,7 @@ import EditTaskModal from "../components/EditTaskModal";
 
 
 function TaskDetails() {
+
     const { id } = useParams();
 
     // Hook per navigare tra le pagine
@@ -17,13 +18,19 @@ function TaskDetails() {
     // task e funzioni del contesto globale
     const { tasks, removeTask, updateTask } = useContext(GlobalContext);
 
-    // stato conferma eliminazione
+    // Trova l'id della task
+    const task = tasks.find(task => task.id.toString() === id);
+
+    // Se la task non viene trovata
+    if (!task) {
+        return <h2>Task non trovata!</h2>
+    }
+
+
+    // Stato conferma eliminazione
     const [showModal, setShowModal] = useState(false);
     // stato modifica task
     const [showEditModal, setShowEditModal] = useState(false);
-
-    // Trova l'id della task
-    const task = tasks.find(task => task.id.toString() === id);
 
 
     // Funzione per eliminare la task
