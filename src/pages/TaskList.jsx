@@ -11,6 +11,7 @@ function TaskList() {
     // Stati per ordinamento campo e direzione (1 crescente, -1 decrescente)
     const [sortBy, setSortBy] = useState("createdAt");
     const [sortOrder, setSortOrder] = useState(1);
+    const sortIcon = sortOrder === 1 ? "▼" : "▲";
 
     // Stato controllato per input ricerca (aggiornamento immediato)
     const [searchInput, setSearchInput] = useState("");
@@ -74,7 +75,7 @@ function TaskList() {
         );
 
         // Ordina la lista filtrata in base al campo e all’ordine selezionato
-        return [...filtered].sort((a, b) => {
+        return filtered.sort((a, b) => {
             let valueA = a[sortBy];
             let valueB = b[sortBy];
 
@@ -83,12 +84,12 @@ function TaskList() {
                 valueB = statusOrder.indexOf(valueB);
             }
 
-            if (sortBy === "createdAt") {
+            else if (sortBy === "createdAt") {
                 valueA = new Date(valueA).getTime();
                 valueB = new Date(valueB).getTime();
             }
 
-            if (typeof valueA === "string") {
+            else if (sortBy === "title") {
                 return valueA.localeCompare(valueB) * sortOrder;
             }
 
@@ -112,9 +113,9 @@ function TaskList() {
             <table>
                 <thead>
                     <tr>
-                        <th onClick={() => handleSort("title")}>Titolo</th>
-                        <th onClick={() => handleSort("status")}>Stato</th>
-                        <th onClick={() => handleSort("createdAt")}>Data di creazione</th>
+                        <th onClick={() => handleSort("title")}>Nome {sortBy === "title" && sortIcon}</th>
+                        <th onClick={() => handleSort("status")}>Stato {sortBy === "status" && sortIcon}</th>
+                        <th onClick={() => handleSort("createdAt")}>Data di creazione {sortBy === "createdAt" && sortIcon}</th>
                     </tr>
                 </thead>
 
