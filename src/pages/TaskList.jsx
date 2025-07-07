@@ -75,7 +75,7 @@ function TaskList() {
         );
 
         // Ordina la lista filtrata in base al campo e all’ordine selezionato
-        return filtered.sort((a, b) => {
+        return [...filtered].sort((a, b) => {
             let valueA = a[sortBy];
             let valueB = b[sortBy];
 
